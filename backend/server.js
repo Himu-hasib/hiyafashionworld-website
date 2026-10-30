@@ -10,17 +10,17 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// সকেট কনফিগারেশন (Vercel লিংক যুক্ত করা হলো)
+// সকেট কনফিগারেশন (সব লিংক থেকে অ্যালাউ করা হলো)
 const io = new Server(server, {
   cors: { 
-    origin: ["http://localhost:5173", "https://frontend-kq9800xpl-ty-12ac.vercel.app"], 
-    methods: ["GET", "POST"] 
+    origin: "*", // 🔴 টেস্টিংয়ের জন্য সব লিংক অ্যালাউ
+    methods: ["GET", "POST", "PUT", "DELETE"] 
   }
 });
 
-// 🔴 CORS সেটিংস আপডেট করা হলো
+// 🔴 CORS সেটিংস (সব লিংক থেকে রিকোয়েস্ট অ্যালাউ)
 app.use(cors({
-  origin: ["http://localhost:5173", "https://frontend-kq9800xpl-ty-12ac.vercel.app"],
+  origin: "*", // 🔴 আপনার Vercel বা অন্য যেকোনো লিংক কাজ করবে
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
