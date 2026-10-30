@@ -27,11 +27,11 @@ router.post('/admin/add', protect, adminOnly,
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
       let imagePaths = [];
       if (req.files && req.files['images']) {
-        imagePaths = req.files['images'].map(file => `http://localhost:5000/uploads/${file.filename}`);
+        imagePaths = req.files['images'].map(file => `http://https://hiyafashionworld-backend.onrender.com/uploads/${file.filename}`);
       }
       let videoPath = '';
       if (req.files && req.files['video'] && req.files['video'].length > 0) {
-        videoPath = `http://localhost:5000/uploads/${req.files['video'][0].filename}`;
+        videoPath = `http://https://hiyafashionworld-backend.onrender.com/uploads/${req.files['video'][0].filename}`;
       }
       const newProduct = await Product.create({
         name, specification, mainCategory, subCategory,
@@ -51,7 +51,7 @@ router.put('/admin/:id', protect, adminOnly,
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
       const updateData = { name, specification, mainCategory, subCategory, price: Number(price), discount: Number(discount), stockType, status };
       if (req.files && req.files['images']) {
-        updateData.images = req.files['images'].map(file => `http://localhost:5000/uploads/${file.filename}`);
+        updateData.images = req.files['images'].map(file => `http://https://hiyafashionworld-backend.onrender.com/uploads/${file.filename}`);
       }
       const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
       res.json(updatedProduct);

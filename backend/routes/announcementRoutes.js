@@ -10,7 +10,7 @@ router.get('/all', async (req, res) => res.json(await Announcement.find().sort('
 router.post('/admin/add', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'No image uploaded' });
-    const imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
+    const imagePath = `http://https://hiyafashionworld-backend.onrender.com/uploads/${req.file.filename}`;
     const ann = await Announcement.create({ image: imagePath });
     res.json(ann);
   } catch (err) {
