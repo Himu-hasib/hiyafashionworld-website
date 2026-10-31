@@ -20,11 +20,10 @@ const io = new Server(server, {
 
 // 🔴 CORS সেটিংস (সব লিংক থেকে রিকোয়েস্ট অ্যালাউ)
 app.use(cors({
-  origin: "*", // 🔴 আপনার Vercel বা অন্য যেকোনো লিংক কাজ করবে
+  origin: "*", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
