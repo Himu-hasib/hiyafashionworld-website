@@ -62,9 +62,9 @@ router.put('/admin/:id', protect, adminOnly,
 
       const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
       res.json(updatedProduct);
-    } catch (err) {
-      console.log("FULL ERROR UPDATE PRODUCT:", err); // 🔴 আসল এরর দেখতে
-      res.status(500).json({ message: err.message });
+        } catch (err) {
+      console.log("FULL ERROR ADD PRODUCT:", JSON.stringify(err, null, 2));
+      res.status(500).json({ message: err.message || "Something went wrong" });
     }
 });
 
