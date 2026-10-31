@@ -1,10 +1,10 @@
 const express = require('express');
 const Product = require('../models/Product');
 const { protect, adminOnly } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, uploadToCloudinary } = require('../middleware/upload'); // 🔴 নতুন ইমপোর্ট
 const router = express.Router();
 
-// 🔴 কাউন্ট API টি /:id এর আগে রাখতে হবে
+// কাউন্ট
 router.get('/admin/count', protect, adminOnly, async (req, res) => {
   try {
     const totalProducts = await Product.countDocuments();
@@ -27,13 +27,18 @@ router.post('/admin/add', protect, adminOnly,
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
       
       let imagePaths = [];
+      // 🔴 Cloudinary-তে বাফার থেকে ইমেজ আপলোড
       if (req.files && req.files['images']) {
-        imagePaths = req.files['images'].map(file => file.path);
+        for (const file of req.files['images']) {
+          const result = await uploadToCloudinary(file.buffer, 'image');
+          imagePaths.push(result.secure_url);
+        }
       }
       
       let videoPath = '';
       if (req.files && req.files['video'] && req.files['video'].length > 0) {
-        videoPath = req.files['video'][0].path;
+        const result = await uploadToCloudinary(req.files['video'][0].buffer, 'video');
+        videoPath = result.secure_url;
       }
 
       const newProduct = await Product.create({
@@ -43,8 +48,8 @@ router.post('/admin/add', protect, adminOnly,
       });
       res.json(newProduct);
     } catch (err) {
-      console.log("FULL ERROR ADD PRODUCT:", err); // 🔴 আসল এরর দেখতে
-      res.status(500).json({ message: err.message });
+      console.error("FULL ERROR:", err);
+      res.status(500).json({ message: err.message || 'Something went wrong' });
     }
 });
 
@@ -53,18 +58,22 @@ router.put('/admin/:id', protect, adminOnly,
   async (req, res) => {
     try {
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
-      
       const updateData = { name, specification, mainCategory, subCategory, price: Number(price), discount: Number(discount), stockType, status };
       
       if (req.files && req.files['images']) {
-        updateData.images = req.files['images'].map(file => file.path);
+        const imagePaths = [];
+        for (const file of req.files['images']) {
+          const result = await uploadToCloudinary(file.buffer, 'image');
+          imagePaths.push(result.secure_url);
+        }
+        updateData.images = imagePaths;
       }
 
       const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
       res.json(updatedProduct);
-        } catch (err) {
-      console.log("FULL ERROR ADD PRODUCT:", JSON.stringify(err, null, 2));
-      res.status(500).json({ message: err.message || "Something went wrong" });
+    } catch (err) {
+      console.error("FULL ERROR UPDATE:", err);
+      res.status(500).json({ message: err.message });
     }
 });
 
