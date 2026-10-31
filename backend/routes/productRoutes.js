@@ -25,14 +25,18 @@ router.post('/admin/add', protect, adminOnly,
   async (req, res) => {
     try {
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
+      
       let imagePaths = [];
       if (req.files && req.files['images']) {
-        imagePaths = req.files['images'].map(file => `http://https://hiyafashionworld-backend.onrender.com/uploads/${file.filename}`);
+        // 🔴 Cloudinary থেকে আসা সরাসরি লিংক
+        imagePaths = req.files['images'].map(file => file.path);
       }
+      
       let videoPath = '';
       if (req.files && req.files['video'] && req.files['video'].length > 0) {
-        videoPath = `http://https://hiyafashionworld-backend.onrender.com/uploads/${req.files['video'][0].filename}`;
+        videoPath = req.files['video'][0].path;
       }
+
       const newProduct = await Product.create({
         name, specification, mainCategory, subCategory,
         price: Number(price), discount: Number(discount),
@@ -49,10 +53,14 @@ router.put('/admin/:id', protect, adminOnly,
   async (req, res) => {
     try {
       const { name, specification, mainCategory, subCategory, price, discount, stockType, status } = req.body;
+      
       const updateData = { name, specification, mainCategory, subCategory, price: Number(price), discount: Number(discount), stockType, status };
+      
       if (req.files && req.files['images']) {
-        updateData.images = req.files['images'].map(file => `http://https://hiyafashionworld-backend.onrender.com/uploads/${file.filename}`);
+        // 🔴 Cloudinary থেকে আসা সরাসরি লিংক
+        updateData.images = req.files['images'].map(file => file.path);
       }
+
       const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
       res.json(updatedProduct);
     } catch (err) {
