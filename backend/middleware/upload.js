@@ -14,7 +14,6 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
-// Cloudinary-তে বাফার আপলোড করার ফাংশন
 const uploadToCloudinary = (fileBuffer, resourceType = 'image') => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
