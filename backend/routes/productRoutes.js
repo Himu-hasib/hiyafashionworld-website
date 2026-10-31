@@ -63,10 +63,10 @@ router.put('/admin/:id', protect, adminOnly,
 
       const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
       res.json(updatedProduct);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-});
+    }  catch (err) {
+  console.log("FULL ERROR:", err); // 🔴 আসল এরর দেখতে
+  res.status(500).json({ message: err.message });
+}
 
 router.delete('/admin/:id', protect, adminOnly, async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);

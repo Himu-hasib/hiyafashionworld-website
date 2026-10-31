@@ -10,8 +10,12 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'hiyafashionworld',
+  params: async (req, file) => {
+    return {
+      folder: 'hiyafashionworld',
+      resource_type: 'auto', // ছবি ও ভিডিওর জন্য
+      public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+    };
   },
 });
 
